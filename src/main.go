@@ -3,6 +3,8 @@ package main
 import (
 	"net/http"
 
+	"github.com/johnbenedictyan/One-CV-Test/models"
+
 	"github.com/gin-contrib/logger"
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +12,8 @@ import (
 func main() {
 	r := gin.Default()
 	r.Use(logger.SetLogger())
+
+	models.ConnectDatabase()
 
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
