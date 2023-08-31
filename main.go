@@ -2,40 +2,26 @@ package main
 
 import (
 	"net/http"
-	"os"
 
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/gin-contrib/logger"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	r := gin.Default()
+	r.Use(logger.SetLogger())
 
-	e := echo.New()
-
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-
-	e.GET("/", func(c echo.Context) error {
-		return c.HTML(http.StatusOK, "Hello, Docker! <3")
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
 	})
 
-	e.GET("/health", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, struct{ Status string }{Status: "OK"})
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Hello World!",
+		})
 	})
 
-	httpPort := os.Getenv("PORT")
-	if httpPort == "" {
-		httpPort = "8080"
-	}
-
-	e.Logger.Fatal(e.Start(":" + httpPort))
-}
-
-// Simple implementation of an integer minimum
-// Adapted from: https://gobyexample.com/testing-and-benchmarking
-func IntMin(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
+	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
