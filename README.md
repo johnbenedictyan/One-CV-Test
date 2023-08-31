@@ -62,7 +62,7 @@ REPLICA_SSL_MODE=disable
 
 #### Database Configuration
 - Use [GORM](https://github.com/go-gorm/gorm) as an ORM
-- Use database `MASTER_DB_HOST` value set as `localhost` for local development, and use `postgres_db` for docker development 
+- Use database `MASTER_DB_HOST` value set as `localhost` for local development, and use `postgres_db` for docker development
 #### PG Admin
 - Check  PG Admin on [http://0.0.0.0:5050/browser/](http://0.0.0.0:5050/browser/)
 - Login with Credential Email `admin@admin.com` Password `root`
@@ -133,7 +133,7 @@ router.Use(middleware.CORSMiddleware())
     └── router.go
 </pre>
 ### Examples
-- More Example [gin-boilerplate-examples](https://github.com/akmamun/gin-boilerplate-examples)
+- More Example [gin-boilerplate-examples](https://github.com/johnbenedictyan/One-CV-Test)
 
 ### Let's Build an API
 
@@ -168,7 +168,7 @@ import (
 var migrationModels = []interface{}{&models.Example{}}
 ```
 3. [controller](controllers) folder add a file `example_controller.go`
-- Create API Endpoint 
+- Create API Endpoint
 - Use any syntax of GORM after `base.DB`, this is wrapper of `*gorm.DB`
 
 ```go
@@ -274,7 +274,7 @@ return appServer
 - [DB Config](config/db.go)
 ```go
 func DbConfiguration() string {
-	
+
 dbname := viper.GetString("database.dbname")
 username := viper.GetString("database.username")
 password := viper.GetString("database.password")

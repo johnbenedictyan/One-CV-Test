@@ -1,8 +1,8 @@
 package routers
 
 import (
-	"github.com/akmamun/gin-boilerplate-examples/routers/middleware"
 	"github.com/gin-gonic/gin"
+	"github.com/johnbenedictyan/One-CV-Test/routers/middleware"
 	"github.com/spf13/viper"
 )
 

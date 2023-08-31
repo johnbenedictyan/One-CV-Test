@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/akmamun/gin-boilerplate-examples/config"
-	"github.com/akmamun/gin-boilerplate-examples/infra/database"
-	"github.com/akmamun/gin-boilerplate-examples/infra/logger"
-	"github.com/akmamun/gin-boilerplate-examples/routers"
-	"github.com/spf13/viper"
 	"time"
+
+	"github.com/johnbenedictyan/One-CV-Test/config"
+	"github.com/johnbenedictyan/One-CV-Test/infra/database"
+	"github.com/johnbenedictyan/One-CV-Test/infra/logger"
+	"github.com/johnbenedictyan/One-CV-Test/routers"
+	"github.com/spf13/viper"
 )
 
 func main() {

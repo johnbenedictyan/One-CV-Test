@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/akmamun/gin-boilerplate-examples/infra/logger"
+	"github.com/johnbenedictyan/One-CV-Test/infra/logger"
 	"github.com/spf13/viper"
 )
 

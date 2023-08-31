@@ -1,11 +1,12 @@
 package controllers
 
 import (
-	"github.com/akmamun/gin-boilerplate-examples/infra/database"
-	"github.com/akmamun/gin-boilerplate-examples/infra/logger"
-	"github.com/akmamun/gin-boilerplate-examples/models"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/johnbenedictyan/One-CV-Test/infra/database"
+	"github.com/johnbenedictyan/One-CV-Test/infra/logger"
+	"github.com/johnbenedictyan/One-CV-Test/models"
 )
 
 type ExampleController struct{}

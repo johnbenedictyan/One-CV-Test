@@ -1,20 +1,21 @@
 package controllers
 
 import (
-	"github.com/akmamun/gin-boilerplate-examples/infra/database"
-	"github.com/akmamun/gorm-pagination/pagination"
 	"net/http"
 	"strconv"
 
-	examples "github.com/akmamun/gin-boilerplate-examples/models"
+	"github.com/akmamun/gorm-pagination/pagination"
+	"github.com/johnbenedictyan/One-CV-Test/infra/database"
+
 	"github.com/gin-gonic/gin"
+	examples "github.com/johnbenedictyan/One-CV-Test/models"
 )
 
 type CreditCardData struct {
 	Number string `json:"number"`
 }
 
-//GetHasManyRelationUserData fetch user data with preload
+// GetHasManyRelationUserData fetch user data with preload
 func (ctrl *ExampleController) GetHasManyRelationUserData(ctx *gin.Context) {
 	var user []examples.User
 	// ctx.JSON(http.StatusOK, &user)
@@ -32,7 +33,7 @@ func (ctrl *ExampleController) GetHasManyRelationUserData(ctx *gin.Context) {
 
 }
 
-//GetHasManyRelationCreditCardData fetch credit-card data with preload
+// GetHasManyRelationCreditCardData fetch credit-card data with preload
 func (ctrl *ExampleController) GetHasManyRelationCreditCardData(ctx *gin.Context) {
 	var creditCards []examples.CreditCard
 	database.DB.Find(&creditCards)

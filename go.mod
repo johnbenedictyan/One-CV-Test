@@ -1,4 +1,4 @@
-module github.com/akmamun/gin-boilerplate-examples
+module github.com/johnbenedictyan/One-CV-Test
 
 go 1.17
 
