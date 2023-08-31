@@ -1,27 +1,36 @@
-# syntax=docker/dockerfile:1
+# Start from golang base image
+FROM golang:1.17-alpine as builder
 
-FROM golang:1.21-alpine
+# Install git.
+RUN apk update && apk add --no-cache git
 
-# Set destination for COPY
+# Working directory
 WORKDIR /app
 
-# Download Go modules
+# Copy go mod and sum files
 COPY go.mod go.sum ./
+
+# Download all dependencies
 RUN go mod download
 
-# Copy the source code. Note the slash at the end, as explained in
-# https://docs.docker.com/engine/reference/builder/#copy
-COPY src/*.go ./
+# Copy everythings
+COPY . .
 
-# Build
-RUN CGO_ENABLED=0 GOOS=linux go build -o /one-cv-test
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -v -o main .
 
-# Optional:
-# To bind to a TCP port, runtime parameters must be supplied to the docker command.
-# But we can document in the Dockerfile what ports
-# the application is going to listen on by default.
-# https://docs.docker.com/engine/reference/builder/#expose
-EXPOSE 8080
+# Start a new stage from scratch
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
 
-# Run
-CMD ["/one-cv-test"]
+WORKDIR /root/
+
+# Copy the Pre-built binary file from the previous stage. Also copy config yml file
+COPY --from=builder /app/main .
+COPY --from=builder /app/.env .env
+
+# Expose port 8080 to the outside world
+EXPOSE 8000
+
+#Command to run the executable
+CMD ["./main"]
