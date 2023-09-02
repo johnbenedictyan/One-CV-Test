@@ -71,13 +71,18 @@ func (ctrl *StudentController) SeedStudents(ctx *gin.Context) {
 	var body struct {
 		Emails []string `json:"emails" binding:"required"`
 	}
-	ctx.ShouldBindJSON(&body)
+	err := ctx.ShouldBindJSON(&body)
+
+	if err != nil {
+		logger.Errorf("error: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	var students []models.Student
 	for _, email := range body.Emails {
 		var student models.Student
-		database.DB.Where("email = ?", email).First(&student)
-		if student.ID == 0 {
+		if err := database.DB.Where("email = ?", email).First(&student).Error; err != nil {
 			student.Email = email
 			database.DB.Create(&student)
 		}

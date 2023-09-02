@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   postgres_db:
-    container_name: core_pg_db
+    container_name: db
     image: postgres:13-alpine
     environment:
       - POSTGRES_USER=${MASTER_DB_USER}
@@ -13,7 +13,7 @@ services:
     restart: always
 
   server:
-    container_name: go_server
+    container_name: server
     build:
       context: .
       dockerfile: Dockerfile

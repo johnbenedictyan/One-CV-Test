@@ -68,9 +68,7 @@ func (ctrl *TeacherController) RegisterStudents(ctx *gin.Context) {
 	var teacher models.Teacher
 	var body RegisterStudentsBody
 	ctx.ShouldBindJSON(&body)
-	database.DB.Where("email = ?", body.Teacher).First(&teacher)
-
-	if teacher.ID == 0 {
+	if err := database.DB.Where("email = ?", body.Teacher).First(&teacher).Error; err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Teacher not found"})
 		return
 	}
@@ -95,15 +93,14 @@ func (ctrl *TeacherController) CommonStudents(ctx *gin.Context) {
 }
 
 type SuspendStudentBody struct {
-	Students string `json:"student" binding:"required"`
+	Student string `json:"student" binding:"required"`
 }
 
 func (ctrl *TeacherController) SuspendStudent(ctx *gin.Context) {
 	var student models.Student
 	var body SuspendStudentBody
 	ctx.ShouldBindJSON(&body)
-	database.DB.Where("email = ?", body.Students).First(&student)
-	if student.ID == 0 {
+	if err := database.DB.Where("email = ?", body.Student).First(&student).Error; err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Student not found"})
 		return
 	}
@@ -126,8 +123,7 @@ func (ctrl *TeacherController) ListRecipients(ctx *gin.Context) {
 	ctx.ShouldBindJSON(&body)
 
 	// Get teacher from email
-	database.DB.Where("email = ?", body.Teacher).First(&teacher)
-	if teacher.ID == 0 {
+	if err := database.DB.Where("email = ?", body.Teacher).First(&teacher).Error; err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Teacher not found"})
 		return
 	}
@@ -168,14 +164,22 @@ func (ctrl *TeacherController) SeedTeachers(ctx *gin.Context) {
 	var body struct {
 		Emails []string `json:"emails" binding:"required"`
 	}
-	ctx.ShouldBindJSON(&body)
+	err := ctx.ShouldBindJSON(&body)
+
+	if err != nil {
+		logger.Errorf("error: %v", err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var teachers []models.Teacher
 	for _, email := range body.Emails {
 		var teacher models.Teacher
-		database.DB.Where("email = ?", email).First(&teacher)
-		if teacher.ID == 0 {
+		if err := database.DB.Where("email = ?", email).First(&teacher).Error; err != nil {
 			teacher.Email = email
 			database.DB.Create(&teacher)
 		}
+		teachers = append(teachers, teacher)
 	}
-	ctx.JSON(http.StatusOK, gin.H{"data": true})
+	ctx.JSON(http.StatusOK, gin.H{"data": teachers})
 }

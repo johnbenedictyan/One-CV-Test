@@ -13,6 +13,9 @@ func RegisterRoutes(route *gin.Engine) {
 	})
 	route.GET("/health", func(ctx *gin.Context) { ctx.JSON(http.StatusOK, gin.H{"live": "ok"}) })
 
-	//Add All route
+	// Add Api route
 	ApiRoutes(route)
+
+	// Add Seed route
+	SeedRoutes(route)
 }
