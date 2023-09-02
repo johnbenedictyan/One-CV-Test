@@ -65,3 +65,23 @@ func (ctrl *StudentController) GetStudentDataByTeacherID(ctx *gin.Context) {
 	database.DB.Where("teacher_id = ?", id).Find(&students)
 	ctx.JSON(http.StatusOK, gin.H{"data": students})
 }
+
+// Seed Students given a list of email strings in the request body, creating new students if they do not exist
+func (ctrl *StudentController) SeedStudents(ctx *gin.Context) {
+	var body struct {
+		Emails []string `json:"emails" binding:"required"`
+	}
+	ctx.ShouldBindJSON(&body)
+
+	var students []models.Student
+	for _, email := range body.Emails {
+		var student models.Student
+		database.DB.Where("email = ?", email).First(&student)
+		if student.ID == 0 {
+			student.Email = email
+			database.DB.Create(&student)
+		}
+		students = append(students, student)
+	}
+	ctx.JSON(http.StatusOK, gin.H{"data": students})
+}

@@ -59,13 +59,29 @@ func (ctrl *TeacherController) DeleteTeacherData(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"data": true})
 }
 
+type RegisterStudentsBody struct {
+	Teacher  string   `json:"teacher" binding:"required"`
+	Students []string `json:"students" binding:"required"`
+}
+
 func (ctrl *TeacherController) RegisterStudents(ctx *gin.Context) {
 	var teacher models.Teacher
-	id := ctx.Param("id")
-	database.DB.First(&teacher, id)
-	var student []models.Student
-	ctx.ShouldBindJSON(&student)
-	database.DB.Model(&teacher).Association("Students").Append(&student)
+	var body RegisterStudentsBody
+	ctx.ShouldBindJSON(&body)
+	database.DB.Where("email = ?", body.Teacher).First(&teacher)
+
+	if teacher.ID == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Teacher not found"})
+		return
+	}
+
+	// Get Students from email string array
+	var students []models.Student
+	database.DB.Where("email IN ?", body.Students).Find(&students)
+
+	// Update teacher's registered students with new students
+	database.DB.Model(&teacher).Association("Students").Append(&students)
+
 	ctx.JSON(http.StatusOK, gin.H{"data": teacher})
 }
 
@@ -78,11 +94,88 @@ func (ctrl *TeacherController) CommonStudents(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"data": students})
 }
 
+type SuspendStudentBody struct {
+	Students string `json:"student" binding:"required"`
+}
+
 func (ctrl *TeacherController) SuspendStudent(ctx *gin.Context) {
 	var student models.Student
-	id := ctx.Param("id")
-	database.DB.First(&student, id)
-	student.IsSuspended = true
-	database.DB.Save(&student)
+	var body SuspendStudentBody
+	ctx.ShouldBindJSON(&body)
+	database.DB.Where("email = ?", body.Students).First(&student)
+	if student.ID == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Student not found"})
+		return
+	}
+
+	// Update Student's isSuspended to true
+	database.DB.Model(&student).Update("is_suspended", true)
+
 	ctx.JSON(http.StatusOK, gin.H{"data": student})
+}
+
+type ListRecipientsBody struct {
+	Teacher      string `json:"teacher" binding:"required"`
+	Notification string `json:"notification" binding:"required"`
+}
+
+func (ctrl *TeacherController) ListRecipients(ctx *gin.Context) {
+	var teacher models.Teacher
+	var students []models.Student
+	var body ListRecipientsBody
+	ctx.ShouldBindJSON(&body)
+
+	// Get teacher from email
+	database.DB.Where("email = ?", body.Teacher).First(&teacher)
+	if teacher.ID == 0 {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Teacher not found"})
+		return
+	}
+
+	// Get students registered to teacher
+	database.DB.Model(&teacher).Association("Students").Find(&students)
+
+	// Append students with mentioned students
+	mentionedStudents := getMentionedStudents(body.Notification)
+	for _, studentEmail := range mentionedStudents {
+		var student models.Student
+		database.DB.Where("email = ?", studentEmail).First(&student)
+		students = append(students, student)
+	}
+
+}
+
+func getMentionedStudents(s string) []string {
+	var mentionedStudentsEmails []string
+	// Search for @ in string, append email after @ to mentionedStudentsEmails
+	for i := 0; i < len(s); i++ {
+		if s[i] == '@' {
+			var email string
+			for j := i + 1; j < len(s); j++ {
+				if s[j] == ' ' {
+					break
+				}
+				email += string(s[j])
+			}
+			mentionedStudentsEmails = append(mentionedStudentsEmails, email)
+		}
+	}
+	return mentionedStudentsEmails
+}
+
+// Seed Teachers given a list of email strings in the request body, creating new teachers if they do not exist
+func (ctrl *TeacherController) SeedTeachers(ctx *gin.Context) {
+	var body struct {
+		Emails []string `json:"emails" binding:"required"`
+	}
+	ctx.ShouldBindJSON(&body)
+	for _, email := range body.Emails {
+		var teacher models.Teacher
+		database.DB.Where("email = ?", email).First(&teacher)
+		if teacher.ID == 0 {
+			teacher.Email = email
+			database.DB.Create(&teacher)
+		}
+	}
+	ctx.JSON(http.StatusOK, gin.H{"data": true})
 }
