@@ -7,6 +7,7 @@ import (
 	"github.com/johnbenedictyan/One-CV-Test/infra/database"
 	"github.com/johnbenedictyan/One-CV-Test/infra/logger"
 	"github.com/johnbenedictyan/One-CV-Test/models"
+	"gorm.io/gorm"
 )
 
 type TeacherController struct{}
@@ -39,7 +40,15 @@ func (ctrl *TeacherController) GetTeacherData(ctx *gin.Context) {
 func (ctrl *TeacherController) GetTeacherDataByID(ctx *gin.Context) {
 	var teacher models.Teacher
 	id := ctx.Param("id")
-	database.DB.First(&teacher, id)
+	database.DB.Preload("RegisteredStudents").First(&teacher, id)
+	ctx.JSON(http.StatusOK, gin.H{"data": teacher})
+}
+
+func (ctrl *TeacherController) GetTeacherDataByEmail(ctx *gin.Context) {
+	var teacher models.Teacher
+	email := ctx.Param("email")
+	println(email)
+	database.DB.Where("email = ?", email).First(&teacher)
 	ctx.JSON(http.StatusOK, gin.H{"data": teacher})
 }
 
@@ -78,9 +87,15 @@ func (ctrl *TeacherController) RegisterStudents(ctx *gin.Context) {
 	database.DB.Where("email IN ?", body.Students).Find(&students)
 
 	// Update teacher's registered students with new students
-	database.DB.Model(&teacher).Association("Students").Append(&students)
+	teacher.RegisteredStudents = append(teacher.RegisteredStudents, students...)
+	// Save teacher
+	database.DB.Session(&gorm.Session{FullSaveAssociations: true}).Updates(&teacher)
 
-	ctx.JSON(http.StatusOK, gin.H{"data": teacher})
+	// Return updated teacher
+	var updatedTeacher models.Teacher
+	database.DB.Preload("RegisteredStudents").First(&updatedTeacher, teacher.ID)
+
+	ctx.JSON(http.StatusOK, gin.H{"data": updatedTeacher})
 }
 
 func (ctrl *TeacherController) CommonStudents(ctx *gin.Context) {

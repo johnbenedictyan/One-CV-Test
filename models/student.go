@@ -1,14 +1,10 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Student struct {
-	gorm.Model
-	Email        string     `gorm:"unique;not null;serializer:json" json:"email"`
-	IsSuspended  bool       `gorm:"default:false" json:"suspended"`
-	RegisteredTo []*Teacher `gorm:"many2many:teacher_students;" json:"teachers"`
+	ID           uint      `gorm:"primary_key" json:"id"`
+	Email        string    `gorm:"unique;not null" json:"email"`
+	IsSuspended  bool      `gorm:"default:false" json:"suspended"`
+	RegisteredTo []Teacher `gorm:"many2many:teacher_students;"`
 }
 
 // TableName Database Table Name of this model

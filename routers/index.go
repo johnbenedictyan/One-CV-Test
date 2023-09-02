@@ -18,4 +18,10 @@ func RegisterRoutes(route *gin.Engine) {
 
 	// Add Seed route
 	SeedRoutes(route)
+
+	// Add Teacher route
+	TeacherRoutes(route)
+
+	// Add Student route
+	StudentRoutes(route)
 }
