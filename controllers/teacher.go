@@ -96,7 +96,7 @@ func (ctrl *TeacherController) RegisterStudents(ctx *gin.Context) {
 	var updatedTeacher models.Teacher
 	database.DB.Preload("RegisteredStudents").First(&updatedTeacher, teacher.ID)
 
-	ctx.JSON(http.StatusOK, gin.H{"data": updatedTeacher})
+	ctx.JSON(http.StatusOK, gin.H{"teacher": updatedTeacher})
 }
 
 func (ctrl *TeacherController) CommonStudents(ctx *gin.Context) {
@@ -115,7 +115,7 @@ func (ctrl *TeacherController) CommonStudents(ctx *gin.Context) {
 		students = []models.Student{}
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": students})
+	ctx.JSON(http.StatusOK, gin.H{"students": students})
 }
 
 func intersection(s1 []models.Student, s2 []models.Student) []models.Student {
@@ -150,7 +150,7 @@ func (ctrl *TeacherController) SuspendStudent(ctx *gin.Context) {
 	// Update Student's isSuspended to true
 	database.DB.Model(&student).Update("suspended", true)
 
-	ctx.JSON(http.StatusOK, gin.H{"data": student})
+	ctx.JSON(http.StatusOK, gin.H{"student": student})
 }
 
 type ListRecipientsBody struct {
@@ -182,7 +182,7 @@ func (ctrl *TeacherController) ListRecipients(ctx *gin.Context) {
 		students = append(students, student)
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"data": students})
+	ctx.JSON(http.StatusOK, gin.H{"students": students})
 }
 
 func getMentionedStudents(s string) []string {
