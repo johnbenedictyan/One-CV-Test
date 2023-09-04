@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/spf13/viper"
 )
 
@@ -15,7 +16,7 @@ type DatabaseConfiguration struct {
 	LogMode  bool
 }
 
-func DbConfiguration() (string, string) {
+func DbConfiguration() (string, string, string) {
 	masterDBName := viper.GetString("MASTER_DB_NAME")
 	masterDBUser := viper.GetString("MASTER_DB_USER")
 	masterDBPassword := viper.GetString("MASTER_DB_PASSWORD")
@@ -30,6 +31,13 @@ func DbConfiguration() (string, string) {
 	replicaDBPort := viper.GetString("REPLICA_DB_PORT")
 	replicaDBSslMode := viper.GetString("REPLICA_SSL_MODE")
 
+	testDBName := viper.GetString("TEST_DB_NAME")
+	testDBUser := viper.GetString("TEST_DB_USER")
+	testDBPassword := viper.GetString("TEST_DB_PASSWORD")
+	testDBHost := viper.GetString("TEST_DB_HOST")
+	testDBPort := viper.GetString("TEST_DB_PORT")
+	testDBSslMode := viper.GetString("TEST_SSL_MODE")
+
 	masterDBDSN := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		masterDBHost, masterDBUser, masterDBPassword, masterDBName, masterDBPort, masterDBSslMode,
@@ -39,5 +47,10 @@ func DbConfiguration() (string, string) {
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
 		replicaDBHost, replicaDBUser, replicaDBPassword, replicaDBName, replicaDBPort, replicaDBSslMode,
 	)
-	return masterDBDSN, replicaDBDSN
+
+	testDBDSN := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
+		testDBHost, testDBUser, testDBPassword, testDBName, testDBPort, testDBSslMode,
+	)
+	return masterDBDSN, replicaDBDSN, testDBDSN
 }
