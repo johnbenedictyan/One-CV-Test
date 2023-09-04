@@ -99,12 +99,38 @@ func (ctrl *TeacherController) RegisterStudents(ctx *gin.Context) {
 }
 
 func (ctrl *TeacherController) CommonStudents(ctx *gin.Context) {
-	var teacher []models.Teacher
+	var teachers []models.Teacher
 	var students []models.Student
-	teacherId := ctx.QueryArray("teacher")
-	database.DB.Where("id IN ?", teacherId).Find(&teacher)
-	database.DB.Model(&teacher).Association("Students").Find(&students)
+	teacherEmails := ctx.QueryArray("teacher")
+	database.DB.Where("email IN ?", teacherEmails).Find(&teachers)
+	database.DB.Model(&teachers[0]).Association("RegisteredStudents").Find(&students)
+
+	for i := 1; i < len(teachers); i++ {
+		var students2 []models.Student
+		database.DB.Model(&teachers[i]).Association("RegisteredStudents").Find(&students2)
+		students = intersection(students, students2)
+	}
+	if students == nil {
+		students = []models.Student{}
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{"data": students})
+}
+
+func intersection(s1 []models.Student, s2 []models.Student) []models.Student {
+	// Get intersection of two student arrays by using hash map
+	m := make(map[uint]bool)
+	for _, student := range s1 {
+		m[student.ID] = true
+	}
+	var intersection []models.Student
+	for _, student := range s2 {
+		if m[student.ID] {
+			intersection = append(intersection, student)
+		}
+	}
+
+	return intersection
 }
 
 type SuspendStudentBody struct {
