@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 	"github.com/johnbenedictyan/One-CV-Test/infra/database"
@@ -147,7 +148,7 @@ func (ctrl *TeacherController) SuspendStudent(ctx *gin.Context) {
 	}
 
 	// Update Student's isSuspended to true
-	database.DB.Model(&student).Update("is_suspended", true)
+	database.DB.Model(&student).Update("suspended", true)
 
 	ctx.JSON(http.StatusOK, gin.H{"data": student})
 }
@@ -169,34 +170,28 @@ func (ctrl *TeacherController) ListRecipients(ctx *gin.Context) {
 		return
 	}
 
-	// Get students registered to teacher
-	database.DB.Model(&teacher).Association("Students").Find(&students)
+	// Get students registered to teacher only if they are not suspended
+	database.DB.Model(&teacher).Association("RegisteredStudents").Find(&students, "suspended = ?", false)
 
 	// Append students with mentioned students
 	mentionedStudents := getMentionedStudents(body.Notification)
+
 	for _, studentEmail := range mentionedStudents {
 		var student models.Student
-		database.DB.Where("email = ?", studentEmail).First(&student)
+		database.DB.Where("email = ?", studentEmail).First(&student, "suspended = ?", false)
 		students = append(students, student)
 	}
 
+	ctx.JSON(http.StatusOK, gin.H{"data": students})
 }
 
 func getMentionedStudents(s string) []string {
-	var mentionedStudentsEmails []string
-	// Search for @ in string, append email after @ to mentionedStudentsEmails
-	for i := 0; i < len(s); i++ {
-		if s[i] == '@' {
-			var email string
-			for j := i + 1; j < len(s); j++ {
-				if s[j] == ' ' {
-					break
-				}
-				email += string(s[j])
-			}
-			mentionedStudentsEmails = append(mentionedStudentsEmails, email)
-		}
+	pattern := regexp.MustCompile(`@[a-z0-9]+@[a-z]+\.[a-z]{2,24}`)
+	mentionedStudentsEmails := pattern.FindAllString(s, -1)
+	for i, studentEmail := range mentionedStudentsEmails {
+		mentionedStudentsEmails[i] = studentEmail[1:]
 	}
+
 	return mentionedStudentsEmails
 }
 
