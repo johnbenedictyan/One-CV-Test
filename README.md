@@ -2,9 +2,15 @@
 One CV Test written in Golang with Gin Framework and Gorm
 ### To Run
 `docker compose up`
+
+### To TEst
+`docker compose up`
+`go test ./tests`
+
 ## Table of Contents
 - [One CV Test](#one-cv-test)
     - [To Run](#to-run)
+    - [To TEst](#to-test)
   - [Table of Contents](#table-of-contents)
     - [Configuration Manage](#configuration-manage)
       - [ENV Manage](#env-manage)
