@@ -1,10 +1,10 @@
 # One CV Test
 One CV Test written in Golang with Gin Framework and Gorm
-<!-- ### Motivation
-Write restful API with fast development and developer friendly -->
-
+### To Run
+`docker compose up`
 ## Table of Contents
 - [One CV Test](#one-cv-test)
+    - [To Run](#to-run)
   - [Table of Contents](#table-of-contents)
     - [Configuration Manage](#configuration-manage)
       - [ENV Manage](#env-manage)
