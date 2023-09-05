@@ -21,6 +21,8 @@ services:
       - POSTGRES_DB=${TEST_DB_NAME}
     volumes:
       - test_postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 5433:5432
     restart: always
 
   server:

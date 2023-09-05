@@ -14,7 +14,7 @@ var (
 	DB                 *gorm.DB
 	err                error
 	DBErr              error
-	testDB             *gorm.DB
+	TestDB             *gorm.DB
 	testDbErr          error
 	testDbMigrationErr error
 )
@@ -22,7 +22,7 @@ var (
 // DBConnection create database connection
 func DBConnection(masterDSN, replicaDSN, testDSN string) error {
 	var db = DB
-	var testDb = testDB
+	var testDb = TestDB
 
 	logMode := viper.GetBool("DB_LOG_MODE")
 	debug := viper.GetBool("DEBUG")
@@ -73,7 +73,7 @@ func DBConnection(masterDSN, replicaDSN, testDSN string) error {
 	if testDbMigrationErr != nil {
 		return testDbMigrationErr
 	}
-	testDB = testDb
+	TestDB = testDb
 
 	return nil
 }
@@ -90,7 +90,7 @@ func GetDBError() error {
 
 // GetTestDB connection
 func GetTestDB() *gorm.DB {
-	return testDB
+	return TestDB
 }
 
 // GetTestDBError connection error

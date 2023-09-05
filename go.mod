@@ -3,22 +3,14 @@ module github.com/johnbenedictyan/One-CV-Test
 go 1.17
 
 require (
-	github.com/akmamun/gorm-pagination/pagination v0.0.0-20220914180003-5c14e6bc1f0a
 	github.com/gin-gonic/gin v1.7.7
+	github.com/go-playground/assert/v2 v2.0.1
+	github.com/lib/pq v1.10.2
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.10.1
 	gorm.io/driver/postgres v1.3.1
 	gorm.io/gorm v1.23.8
 	gorm.io/plugin/dbresolver v1.1.0
-)
-
-require (
-	github.com/alexflint/go-filemutex v1.2.0 // indirect
-	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/khaiql/dbcleaner v2.3.0+incompatible // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/stretchr/objx v0.5.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (
@@ -52,7 +44,7 @@ require (
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/stretchr/testify v1.8.4
+	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.2.6 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
@@ -60,6 +52,5 @@ require (
 	golang.org/x/text v0.4.0 // indirect
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
-	gopkg.in/khaiql/dbcleaner.v2 v2.3.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )

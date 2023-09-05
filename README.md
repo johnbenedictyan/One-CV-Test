@@ -1,28 +1,29 @@
-# Go Boilerplate
-An API boilerplate written in Golang with Gin Framework and Gorm
-### Motivation
-Write restful API with fast development and developer friendly
+# One CV Test
+One CV Test written in Golang with Gin Framework and Gorm
+<!-- ### Motivation
+Write restful API with fast development and developer friendly -->
 
 ## Table of Contents
-- [Motivation](#motivation)
-- [Configuration Manage](#configuration-manage)
-  - [ENV Manage](#env-manage)
-  - [Server Configuration](#server-configuration)
-  - [Database Configuration](#database-configuration)
-  - [PgAdmin](#pg-admin)
-- [Installation](#installation)
-  - [Local Setup Instruction](#local-setup-instruction)
-  - [Develop Application in Docker with Live Reload](#develop-application-in-docker-with-live-reload)
-- [Middlewares](#middlewares)
-- [Boilerplate Structure](#boilerplate-structure)
-- [Code Examples](#examples)
-- [Let's Build an API](#lets-build-an-api)
-- [Deployment](#deployment)
-  - [Container Development Build](#container-development-build)
-  - [Container Production Build and Up](#container-production-build-and-up)
-- [Useful Commands](#useful-commands)
-- [ENV YAML Configure](#env-yaml-configure)
-- [Use Packages](#use-packages)
+- [One CV Test](#one-cv-test)
+  - [Table of Contents](#table-of-contents)
+    - [Configuration Manage](#configuration-manage)
+      - [ENV Manage](#env-manage)
+      - [Server Configuration](#server-configuration)
+      - [Database Configuration](#database-configuration)
+      - [PG Admin](#pg-admin)
+    - [Installation](#installation)
+      - [Local Setup Instruction](#local-setup-instruction)
+      - [Develop Application in Docker with Live Reload](#develop-application-in-docker-with-live-reload)
+    - [Middlewares](#middlewares)
+    - [Boilerplate Structure](#boilerplate-structure)
+    - [Examples](#examples)
+    - [Let's Build an API](#lets-build-an-api)
+    - [Deployment](#deployment)
+      - [Container Development Build](#container-development-build)
+      - [Container Production Build and Up](#container-production-build-and-up)
+      - [ENV Yaml Configure](#env-yaml-configure)
+    - [Useful Commands](#useful-commands)
+    - [Use Packages](#use-packages)
 
 ### Configuration Manage
 #### ENV Manage

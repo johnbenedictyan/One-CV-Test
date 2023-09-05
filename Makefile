@@ -22,3 +22,11 @@ production:
 clean:
 	docker-compose -f docker-compose-prod.yml down -v
 	docker-compose -f docker-compose-dev.yml down -v
+
+test:
+	docker-compose up -d
+	docker-compose exec -T server go test -tags="register" ./...
+	docker-compose down
+
+unit_test:
+	go test ./...
